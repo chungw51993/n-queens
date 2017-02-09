@@ -12,7 +12,6 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
-  
 window.findAllRookSolutions = _.memoize(function(n) {
   if (!n) {
     return [];
@@ -80,7 +79,6 @@ window.queenIsSafe = function(row, col, board) {
 };
 
 window.findNRooksSolution = function(n, row = 0, col = 0) {
-
   var solution = makeEmptyMatrix(n);
 
   for (var i = 0; i < n; i++) {
@@ -95,7 +93,6 @@ window.findNRooksSolution = function(n, row = 0, col = 0) {
     }
   }
   
-
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 };

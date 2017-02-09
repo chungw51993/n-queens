@@ -140,7 +140,7 @@
     hasAnyMajorDiagonalConflicts: function() {
       var board = this.rows();
       var result = false;
-      var j = board.length - 2;
+      var j = board.length - 1;
       for (var i = -j; i <= j; i++) {
         result = result || this.hasMajorDiagonalConflictAt(i);
       }
@@ -170,8 +170,8 @@
     hasAnyMinorDiagonalConflicts: function() {
       var board = this.rows();
       var result = false;
-      var j = board.length + 1;
-      for (var i = j; i >= 1; i--) {
+      var j = (board.length * 2) - 1;
+      for (var i = j; i >= 0; i--) {
         result = result || this.hasMinorDiagonalConflictAt(i);
       }
       return result;
