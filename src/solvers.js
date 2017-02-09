@@ -14,22 +14,46 @@
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
 
+window.colFull = function(colIndex, board) {
+  var counter = 0;
+  board.forEach(row => {
+    counter += row[colIndex];
+  }); 
+  return counter > 0;
+};
+
+window.majorDiagonalFull = function(majorDiagonalColumnIndexAtFirstRow, board) {
+  var counter = 0;
+  var index = majorDiagonalColumnIndexAtFirstRow;
+  board.forEach(function(row) {
+    if (row[index]) {
+      counter += row[index];
+    }
+    index++;
+  });
+  return counter > 0;
+};
+
+window.minorDiagonalFull = function(minorDiagonalColumnIndexAtFirstRow, board) {
+  var counter = 0;
+  var index = minorDiagonalColumnIndexAtFirstRow;
+  board.forEach(function(row) {
+    if (row[index]) {
+      counter += row[index];
+    }
+    index--;
+  });
+  return counter > 0;
+};
 
 window.findNRooksSolution = function(n, row = 0, col = 0) {
   var solution = makeEmptyMatrix(n);
-  var colFull = function(colIndex, board) {
-    var counter = 0;
-    board.forEach(row => {
-      counter += row[colIndex];
-    }); 
-    return counter > 0;
-  };
 
-  for (var i = 0; i < solution.length; i++) {
-    while (col < solution.length) {
+  for (var i = 0; i < n; i++) {
+    while (col < n) {
       if (!colFull(col, solution)) {
         solution[row][col] = 1;
-        row = row + 1 === solution.length ? 0 : row + 1;
+        row = row + 1 === n ? 0 : row + 1;
         col = 0;
         break;
       }
@@ -89,8 +113,49 @@ window.countNRooksSolutions = function(n) {
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
-window.findNQueensSolution = function(n) {
-  var solution = undefined; //fixme
+window.findNQueensSolution = function(n, row = 0, col = 0) {
+  var solution = makeEmptyMatrix(n);
+  var start = [row, col];
+
+  for (var i = 0; i < n; i++) {
+    while (col < n) {
+      var colEmpty = !colFull(col, solution);
+      var minorEmpty = !minorDiagonalFull(col + row, solution);
+      var majorEmpty = !majorDiagonalFull(col - row, solution);
+
+      if (colEmpty && minorEmpty && majorEmpty) {
+        solution[row][col] = 1;
+        row = row + 1 === n ? 0 : row + 1;
+        col = 0;
+        break;
+      }
+      col++;
+    }
+  }
+
+  var numPieces = solution.reduce((memo, row) => {
+    return memo + row.reduce((memo, col) => memo + col, 0);
+  }, 0);
+
+  if (numPieces !== n) {
+
+    row = start[0];
+    col = start[1];
+
+    if (row === n - 1 && col === n - 1) {
+      return makeEmptyMatrix(n);
+    }
+    
+    if (col === n - 1) {
+      col = 0;
+      row++;
+    } else {
+      col++;
+    }
+    
+    solution = findNQueensSolution(n, row, col);
+
+  }
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
